@@ -1,4 +1,4 @@
-# Android manga comic app (with Java)
+# Android manga comic app (with Kotlin)
 
 ## Features
 
@@ -10,7 +10,7 @@
 
 ## Languages, libraries and tools used
 
-- [Java Android]
+- [Kotlin]
 - [androidX libraries](https://developer.android.com/jetpack/androidx)
 - [Android LifeCycle](https://developer.android.com/topic/libraries/architecture)
 - [Firebase] to store user accounts
@@ -19,9 +19,3 @@
 - [DataBinding]
 - [PostMan] to test API
 
-## Members
-
-- Nguyen Quoc Thinh - 21110662
-- Nguyen Dang Truong - 21110706
-- Nguyen Huu Tien - 21110678
-- Bui Quang Thien - 21110656
