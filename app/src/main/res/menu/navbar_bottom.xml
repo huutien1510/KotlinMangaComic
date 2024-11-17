@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:title="Home"
+        android:id="@+id/home"
+        android:icon="@drawable/icon_home"
+        app:cnb_textColor="@color/black"
+        app:cnb_iconColor="@color/black"
+        app:cnb_backgroundColor="@color/navbar_bg"/>
+    <item
+        android:title="Tủ sách"
+        android:id="@+id/store"
+        android:icon="@drawable/icon_store"
+        app:cnb_textColor="@color/black"
+        app:cnb_iconColor="@color/black"
+        app:cnb_backgroundColor="@color/navbar_bg"/>
+    <!--<item
+        android:title="Thông báo"
+        android:id="@+id/cart"
+        android:icon="@drawable/icon_noti"
+        app:cnb_textColor="@color/black"
+        app:cnb_iconColor="@color/black"
+        app:cnb_backgroundColor="@color/navbar_bg"/>-->
+    <item
+        android:title="Tài khoản"
+        android:id="@+id/profile"
+        android:icon="@drawable/icon_profile"
+        app:cnb_textColor="@color/black"
+        app:cnb_iconColor="@color/black"
+        app:cnb_backgroundColor="@color/navbar_bg"/>
+</menu>

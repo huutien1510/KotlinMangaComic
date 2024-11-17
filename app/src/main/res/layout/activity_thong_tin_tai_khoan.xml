@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:background="@color/material_dynamic_primary70"
+        android:textColor="@color/white"
+        android:text="Thông tin cá nhân"
+        android:textStyle="bold"
+        android:textSize="30sp"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:src="@drawable/avatar"
+        android:paddingTop="20dp"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:paddingBottom="20sp"
+        android:layout_height="210sp"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="165dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="ID:"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_id"
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+
+            android:background="@drawable/khung"
+            android:gravity="center"
+            android:text="1"
+            android:textSize="25dp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="165dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="Email:"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_email"
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+
+            android:background="@drawable/khung"
+            android:gravity="center"
+            android:text="test@gmail.com"
+            android:textSize="25dp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="165sp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="Họ tên:"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/tv_hoten"
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:enabled="false"
+            android:textColor="@color/black"
+            android:background="@drawable/khung"
+            android:gravity="center"
+            android:text="Nguyễn Quốc Thịnh"
+            android:textSize="24dp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="165sp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="Điện thoại:"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/tv_dienthoai"
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:enabled="false"
+            android:textColor="@color/black"
+            android:background="@drawable/khung"
+            android:gravity="center"
+            android:text="093xxxxxxx"
+            android:textSize="24dp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="165dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="Điểm thưởng:"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_diemthuong"
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+
+            android:background="@drawable/khung"
+            android:gravity="center"
+            android:text="100"
+            android:textSize="25dp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="165dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="Trạng thái:"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_trangthai"
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+
+            android:background="@drawable/khung"
+            android:gravity="center"
+            android:text="Hoạt động"
+            android:textSize="25dp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="20dp">
+
+        <Button
+            android:id="@+id/btn_chinhsua"
+            android:layout_width="134dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/button"
+            android:text="Chỉnh sửa"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+
+            android:textSize="14dp" />
+        <Button
+            android:id="@+id/btn_xacnhan"
+            android:layout_width="134dp"
+            android:layout_height="40dp"
+            android:background="@drawable/button"
+            android:text="Xác nhận"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            android:textSize="14dp"
+            android:layout_marginRight="10dp"
+            android:textAllCaps="false"/>
+        <Button
+            android:layout_marginLeft="10dp"
+            android:id="@+id/btn_huy"
+            android:visibility="gone"
+            android:layout_width="134dp"
+            android:layout_height="40dp"
+            android:background="@drawable/button"
+            android:text="Hủy"
+            android:textColor="@color/white"
+            android:textSize="14dp"
+            android:textAllCaps="false"/>
+    </LinearLayout>
+
+</LinearLayout>
