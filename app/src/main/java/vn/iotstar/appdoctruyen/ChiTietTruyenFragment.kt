@@ -19,6 +19,7 @@ import vn.iotstar.appdoctruyen.model.BinhLuanTruyenDto
 import vn.iotstar.appdoctruyen.model.Taikhoan
 import vn.iotstar.appdoctruyen.model.Thongke
 import vn.iotstar.appdoctruyen.model.Truyen1
+import vn.iotstar.appdoctruyen.model.truyen
 
 class ChiTietTruyenFragment : Fragment() {
     private var truyen: Truyen1? = null
@@ -85,6 +86,23 @@ class ChiTietTruyenFragment : Fragment() {
 
             override fun onFailure(call: Call<Double?>, t: Throwable) {
                 Log.e("API_CALL", "Failed to fetch data from API", t)
+            }
+        })
+        APIService.apiService.getTruyenById(id_truyen)?.enqueue(object : Callback<List<truyen>?> {
+            override fun onResponse(call: Call<List<truyen>?>, response: Response<List<truyen>?>) {
+                if (response.isSuccessful) {
+                    response.body()?.let { data ->
+                        if (data.isNotEmpty()) {
+                            tv_mota?.text = data[0].mota
+
+                        }
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<List<truyen>?>, t: Throwable) {
+                Log.e("API_CALL", "Failed to fetch data from API", t)
+                Toast.makeText(context, "Failure: " + t.message, Toast.LENGTH_SHORT).show()
             }
         })
 
