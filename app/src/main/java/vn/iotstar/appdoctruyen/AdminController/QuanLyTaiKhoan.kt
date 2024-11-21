@@ -2,6 +2,7 @@ package vn.iotstar.appdoctruyen.AdminController
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -25,7 +26,7 @@ class QuanLyTaiKhoan : AppCompatActivity(), View.OnClickListener {
     var email: String? = null
     private var rcv: RecyclerView? = null
     private var adapter: QuanLyTaiKhoanAdapter? = null
-    var img_newtk: ImageView? = null
+
     var bt_them: Button? = null
     var bt_huy: Button? = null
     var edt_email: EditText? = null
@@ -48,20 +49,28 @@ class QuanLyTaiKhoan : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun showTaiKhoan() {
-        APIService.apiService.taiKhoan?.enqueue(object : Callback<List<Taikhoan?>?> {
-            override fun onResponse(call: Call<List<Taikhoan?>?>, response: Response<List<Taikhoan?>?>) {
-                val list = response.body()
-                adapter = QuanLyTaiKhoanAdapter(this@QuanLyTaiKhoan, list)
-                rcv!!.setAdapter(adapter)
+        APIService.apiService.taiKhoan?.enqueue(object : Callback<List<Taikhoan>> {
+            override fun onResponse(call: Call<List<Taikhoan>>, response: Response<List<Taikhoan>>) {
+                if (response.isSuccessful) {
+                    val list = response.body()
+                    Log.d("API_RESPONSE", list.toString())
+                    adapter = QuanLyTaiKhoanAdapter(this@QuanLyTaiKhoan, list)
+                    rcv!!.adapter = adapter
+                } else {
+                    Log.e("API_ERROR", "Response code: ${response.code()}")
+                }
             }
 
-            override fun onFailure(call: Call<List<Taikhoan?>?>, throwable: Throwable) {}
+            override fun onFailure(call: Call<List<Taikhoan>>, t: Throwable) {
+                Log.e("API_ERROR", "Failure: ${t.message}")
+                Toast.makeText(this@QuanLyTaiKhoan, "API call failed: ${t.message}", Toast.LENGTH_LONG).show()
+            }
         })
+
     }
 
     private fun AnhXa() {
         rcv = findViewById(R.id.rcv_quanlytaikhoan)
-        img_newtk = findViewById(R.id.img_newtaikhoan)
         bt_huy = findViewById(R.id.bt_huy_newtk)
         bt_them = findViewById(R.id.bt_them_newtk)
         edt_email = findViewById(R.id.edt_email_newtk)
@@ -72,9 +81,6 @@ class QuanLyTaiKhoan : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onClick(v: View) {
-        if (v.id == R.id.img_newtaikhoan) {
-            cv_themtaikhoan!!.visibility = View.VISIBLE
-        }
         if (v.id == R.id.bt_huy_newtk) {
             cv_themtaikhoan!!.visibility = View.GONE
         }
@@ -99,7 +105,6 @@ class QuanLyTaiKhoan : AppCompatActivity(), View.OnClickListener {
     private fun setOnClickListener() {
         bt_them!!.setOnClickListener(this)
         bt_huy!!.setOnClickListener(this)
-        img_newtk!!.setOnClickListener(this)
     }
 
     private fun reload() {

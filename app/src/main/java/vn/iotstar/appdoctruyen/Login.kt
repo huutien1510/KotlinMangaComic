@@ -6,9 +6,16 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import vn.iotstar.appdoctruyen.API.APIService
+import vn.iotstar.appdoctruyen.model.Taikhoan
 
 class Login : AppCompatActivity() {
     private var email: EditText? = null
@@ -36,6 +43,8 @@ class Login : AppCompatActivity() {
     private fun login() {
         val emailtype: String
         val passtype: String
+        var taikhoan: List<Taikhoan>? = null
+        var tv_trangthai: TextView? = null
         emailtype = email!!.getText().toString()
         passtype = pass!!.getText().toString()
         if (TextUtils.isEmpty(emailtype)) {
@@ -48,9 +57,25 @@ class Login : AppCompatActivity() {
         }
         mAuth!!.signInWithEmailAndPassword(emailtype, passtype).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                Toast.makeText(applicationContext, "Đăng nhập thành công", Toast.LENGTH_SHORT).show()
-                val intent = Intent(this@Login, MainActivity::class.java)
-                startActivity(intent)
+                APIService.apiService.getTaiKhoanByEmail(emailtype)?.enqueue(object :
+                    Callback<List<Taikhoan>?> {
+                    override fun onResponse(call: Call<List<Taikhoan>?>, response: Response<List<Taikhoan>?>) {
+                        taikhoan = response.body()
+                        if (taikhoan != null) {
+                            val trangthai = taikhoan!![0].loaitk
+                            if (trangthai != 2) {
+                                Toast.makeText(applicationContext, "Đăng nhập thành công", Toast.LENGTH_SHORT).show()
+                                val intent = Intent(this@Login, MainActivity::class.java)
+                                startActivity(intent)
+                            } else {
+                                Toast.makeText(applicationContext, "Tài khoản bạn đã bị khóa!", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+
+                    override fun onFailure(call: Call<List<Taikhoan>?>, throwable: Throwable) {}
+                })
+
             } else Toast.makeText(applicationContext, "Đăng nhập thất bại!", Toast.LENGTH_SHORT).show()
         }
     }
