@@ -121,7 +121,7 @@ interface APIService {
     fun getOneTruyen(@Path("idchapter") idchapter: Int?): Call<Truyen1>?
 
     @GET("/truyen/chapter/getone/{idchapter}")
-    fun getOneChapter(@Path("idchapter") id: Int): Call<ChapterDto>?
+    fun getOneChapter(@Path("idchapter") id: Int?): Call<ChapterDto>?
 
     @GET("/truyen/chapter/tenchapter/{idtruyen}")
     fun getTenChapterNew(@Path("idtruyen") idtruyen: Int): Call<String>?
@@ -173,7 +173,7 @@ interface APIService {
         val gson = GsonBuilder().setDateFormat("dd-MM-yyyy").create()
 
         val apiService = Retrofit.Builder()
-            .baseUrl("http://172.172.13.217:8090/")
+            .baseUrl("http://172.16.30.218:8090/")
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
             .create(APIService::class.java)
