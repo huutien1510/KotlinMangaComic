@@ -193,6 +193,10 @@ class DocChapter : AppCompatActivity(), View.OnClickListener {
             showToast("Bình luận không được để trống!")
             return
         }
+        if (user == null) {
+            showToast("Bạn cần đăng nhập để bình luận!")
+            return
+        }
         user?.email?.let { email ->
             APIService.apiService.findByEmail1(email)?.enqueue(object : Callback<List<TaiKhoanDto>> {
                 override fun onResponse(call: Call<List<TaiKhoanDto>>, response: Response<List<TaiKhoanDto>>) {

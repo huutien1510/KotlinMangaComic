@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import vn.iotstar.appdoctruyen.Adapter.ChapterAdapter.ChapterViewHolder
 import vn.iotstar.appdoctruyen.DocChapter
 import vn.iotstar.appdoctruyen.R
@@ -22,12 +23,13 @@ class ChapterAdapter(private val context: Context, private val list: List<Chapte
     }
 
     override fun onBindViewHolder(holder: ChapterViewHolder, position: Int) {
+        var user = FirebaseAuth.getInstance().currentUser
         val chapter = list!![position] ?: return
         holder.tv_chapter.text = chapter.tenchapter
         holder.tv_luotxem.text = "Lượt xem: " + chapter.soluotxem
         holder.tv_ngaydang.text = "Ngày đăng: " + chapter.ngaydang
         holder.ll_rcv_chapter.setOnClickListener { view: View? ->
-            if (email != null) {
+            if (user != null) {
                 val intent = Intent(holder.itemView.context, DocChapter::class.java)
                 intent.putExtra("id_chapter", chapter.id)
                 intent.putExtra("id_truyen", chapter.idtruyen)
