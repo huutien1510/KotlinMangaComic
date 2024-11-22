@@ -75,16 +75,6 @@ class DocChapter : AppCompatActivity(), View.OnClickListener {
         btBinhLuan.setOnClickListener(this)
 
         // Gắn sự kiện cho nút "Đánh giá"
-//        btDanhGia.setOnClickListener {
-//            val soSao = rtb.rating // Lấy số sao từ RatingBar
-//            if (soSao == 0f) {
-//                showToast("Vui lòng chọn số sao!") // Hiển thị thông báo nếu không chọn sao
-//                return@setOnClickListener
-//            }
-//
-//            Log.d("DEBUG", "Người dùng chọn đánh giá: $soSao sao")
-//            postDanhGia(soSao.toDouble()) // Gọi hàm postDanhGia với số sao được chọn
-//        }
 
         btDanhGia.setOnClickListener {
             val soSao = rtb.rating.toDouble()

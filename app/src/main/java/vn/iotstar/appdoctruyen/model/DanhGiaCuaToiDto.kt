@@ -11,6 +11,10 @@ class DanhGiaCuaToiDto {
     var id: Int? = null
     var idchapter: Int? = null
     var idtaikhoan: Int? = null
+    var tenTruyen: String? = null // Thêm trường này
+    var tenChapter: String? = null // Thêm trường này
     var sosao: Double? = null
     var ngaydanhgia: String? = null
+    var linkAnh: String? = null // Thêm trường này
 }
+
