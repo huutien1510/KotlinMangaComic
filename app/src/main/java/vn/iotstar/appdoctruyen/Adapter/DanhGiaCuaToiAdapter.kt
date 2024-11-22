@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import vn.iotstar.appdoctruyen.Adapter.DanhGiaCuaToiAdapter.DanhGiaCuaToiViewHolder
+import com.bumptech.glide.Glide
 import vn.iotstar.appdoctruyen.R
 import vn.iotstar.appdoctruyen.model.DanhGiaCuaToiDto
 
@@ -15,19 +15,27 @@ class DanhGiaCuaToiAdapter(
     private val context: Context,
     private val layout: Int,
     private val list: List<DanhGiaCuaToiDto>?
-) : RecyclerView.Adapter<DanhGiaCuaToiViewHolder>() {
+) : RecyclerView.Adapter<DanhGiaCuaToiAdapter.DanhGiaCuaToiViewHolder>() {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DanhGiaCuaToiViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_rcv_danhgiacuatoi, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
         return DanhGiaCuaToiViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: DanhGiaCuaToiViewHolder, position: Int) {
-        val danhgia = list!![position] ?: return
-        holder.tv_tentruyen.text = danhgia.idchapter.toString()
-        holder.tv_chapter.text = "Chapter: " + danhgia.idchapter
-        holder.tv_pl.text = "Đánh giá: " + danhgia.sosao + "sao"
-        holder.tv_ngaydang.text = "Ngày đăng: " + danhgia.ngaydanhgia
-        //Glide.with(this.context).load(truyenVotes.getLinkanh()).into(holder.img_theloai);
+        val danhGia = list?.get(position) ?: return
+
+        // Gán dữ liệu vào các view
+        holder.tv_tentruyen.text = danhGia.tenTruyen
+        holder.tv_chapter.text = "Chapter: ${danhGia.tenChapter}"
+        holder.tv_pl.text = "Đánh giá: ${danhGia.sosao} sao"
+        holder.tv_ngaydang.text = "Ngày đăng: ${danhGia.ngaydanhgia}"
+
+        // Load ảnh truyện
+        Glide.with(context)
+            .load(danhGia.linkAnh)
+            .placeholder(R.drawable.ic_launcher_foreground) // Ảnh tạm khi chưa load xong
+            .into(holder.img_truyen)
     }
 
     override fun getItemCount(): Int {
@@ -35,18 +43,10 @@ class DanhGiaCuaToiAdapter(
     }
 
     inner class DanhGiaCuaToiViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var tv_tentruyen: TextView
-        var tv_chapter: TextView
-        var tv_pl: TextView
-        var tv_ngaydang: TextView
-        var img_truyen: ImageView
-
-        init {
-            tv_tentruyen = itemView.findViewById(R.id.tv_tong_tentruyen)
-            tv_chapter = itemView.findViewById(R.id.tv_tong_tenchapter)
-            tv_pl = itemView.findViewById(R.id.tv_tong_pl)
-            tv_ngaydang = itemView.findViewById(R.id.tv_tong_ngaydang)
-            img_truyen = itemView.findViewById(R.id.img_tong_truyen)
-        }
+        val tv_tentruyen: TextView = itemView.findViewById(R.id.tv_tong_tentruyen)
+        val tv_chapter: TextView = itemView.findViewById(R.id.tv_tong_tenchapter)
+        val tv_pl: TextView = itemView.findViewById(R.id.tv_tong_pl)
+        val tv_ngaydang: TextView = itemView.findViewById(R.id.tv_tong_ngaydang)
+        val img_truyen: ImageView = itemView.findViewById(R.id.img_tong_truyen)
     }
 }

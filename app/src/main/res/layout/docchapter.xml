@@ -97,11 +97,12 @@
                             android:id="@+id/tv_sosaochapter"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="200dp"
-                            android:text="4.5/5"
-                            android:textSize="16dp"
+                            android:layout_marginStart="200dp"
+                            android:text="xxx"
+                            android:textSize="16sp"
                             android:textStyle="bold"
-                            android:textColor="@color/black"/>
+                            android:textColor="@color/black" />
+
                         <ImageView
                             android:layout_marginLeft="5dp"
                             android:layout_width="23dp"

@@ -45,6 +45,18 @@ interface APIService {
     @POST("truyen")
     fun addTruyen(@Body truyen1: truyen): Call<truyen>?
 
+    @POST("/danhgia")
+    fun addOrUpdateDanhGia(@Body danhGiaRequest: DanhGiaRequest): Call<Map<String, Any>>?
+
+    @GET("/danhgia/{idchapter}/{idtaikhoan}")
+    fun getDanhGiaByUserAndChapter(
+        @Path("idchapter") idchapter: Int,
+        @Path("idtaikhoan") idtaikhoan: Int
+    ): Call<DanhGiaRequest>?
+
+    @GET("/truyen/gettbdanhgiatheochapter/{id}")
+    fun getAverageRatingByIdChapter(@Path("id") id: Int): Call<Double>?
+
     @GET("truyen/chapter/{id}")
     fun getChapterByIdAdmin(@Path("id") id: Int): Call<List<ChapterAdmin>>?
 
@@ -153,9 +165,6 @@ interface APIService {
         @Path("idtaikhoan") idtaikhoan: Int,
         @Path("sosao") sosao: Double
     ): Call<Void>?
-
-    @GET("/truyen/gettbdanhgiatheochapter/{id}")
-    fun getAverageRatingByIdChapter(@Path("id") id: Int): Call<Double>?
 
     @PUT("taikhoan/{id}")
     fun updateTaiKhoan(@Body taikhoan: Taikhoan, @Path("id") id: Int): Call<Taikhoan>?
