@@ -169,6 +169,9 @@ interface APIService {
     @PUT("taikhoan/{id}")
     fun updateTaiKhoan(@Body taikhoan: Taikhoan, @Path("id") id: Int): Call<Taikhoan>?
 
+    @POST("/tusach/lichsu")
+    fun addLichSuDocTruyen(@Body lichSuDocTruyenModel: LichSuDocTruyenModel): Call<Void>?
+
     companion object {
         val gson = GsonBuilder().setDateFormat("dd-MM-yyyy").create()
 
