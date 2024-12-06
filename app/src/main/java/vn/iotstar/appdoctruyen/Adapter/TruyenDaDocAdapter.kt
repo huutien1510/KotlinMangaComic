@@ -56,7 +56,6 @@ class TruyenDaDocAdapter //     public TruyenDaDocAdapter(Context context, List<
                 holder.tv_tentruyen.text = truyen!!.tentruyen
                 holder.tv_chapterdangxem.text = "Chapter đang xem: ${truyendadoc.idchapter}"
             } else {
-                // Nếu không có dữ liệu truyện, có thể xử lý lỗi ở đây
                 Toast.makeText(context, "Không thể tải thông tin truyện.", Toast.LENGTH_SHORT)
                     .show()
             }
