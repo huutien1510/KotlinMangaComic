@@ -17,7 +17,7 @@ object RetrofitClient {
             return field
         }
         private set
-    private const val BASE_URL = "http://192.168.1.76:8090/"
+    private const val BASE_URL = "http://192.168.67.212:8090/"
     val apiService: APIService?
         get() = BaseClient.createService(APIService::class.java, BASE_URL)
 }

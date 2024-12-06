@@ -38,25 +38,28 @@ class TruyenDaDocAdapter //     public TruyenDaDocAdapter(Context context, List<
     var tenchaptermoinhat: String? = null
     private var id = 0
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TruyenDaDocViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_rcv_truyendadoc, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_rcv_truyendadoc, parent, false)
         return TruyenDaDocViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: TruyenDaDocViewHolder, position: Int) {
         val truyendadoc = list!![position] ?: return
         id = truyendadoc.idchapter
-        getOneChapter(id)
-        Handler().postDelayed({
-            getOneTruyen(chapter!!.id)
-            Handler().postDelayed({
-                Glide.with(context).load(truyen!!.linkanh).into(holder.img_truyendadoc)
+
+        getOneTruyen(id) { truyen ->
+            if (truyen != null) {
+                Glide.with(context)
+                    .load(truyen!!.linkanh)
+                    .skipMemoryCache(true)
+                    .into(holder.img_truyendadoc)
                 holder.tv_tentruyen.text = truyen!!.tentruyen
-                holder.tv_chapterdangxem.text = "Chapter đang xem: " + truyendadoc.idchapter
-                id = truyendadoc.idchapter
-                getOneChapter(id)
-                getOneTruyen(chapter!!.id)
-            }, 500)
-        }, 500)
+                holder.tv_chapterdangxem.text = "Chapter đang xem: ${truyendadoc.idchapter}"
+            } else {
+                Toast.makeText(context, "Không thể tải thông tin truyện.", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
     }
 
     private fun getOneChapter(id: Int) {
@@ -67,20 +70,24 @@ class TruyenDaDocAdapter //     public TruyenDaDocAdapter(Context context, List<
 
             override fun onFailure(call: Call<ChapterDto?>, t: Throwable) {
                 Log.e("API_CALL", "Failed to fetch data from API", t)
-                Toast.makeText(context.applicationContext, "loine: " + t.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context.applicationContext, "loine: " + t.message, Toast.LENGTH_SHORT
+                ).show()
             }
         })
     }
 
-    private fun getOneTruyen(chapter: Int?) {
+    private fun getOneTruyen(chapter: Int?, callback: (Truyen1?) -> Unit) {
         APIService.apiService.getOneTruyen(chapter)?.enqueue(object : Callback<Truyen1?> {
             override fun onResponse(call: Call<Truyen1?>, response: Response<Truyen1?>) {
                 truyen = response.body()
+                callback(truyen)
             }
 
             override fun onFailure(call: Call<Truyen1?>, t: Throwable) {
                 Log.e("API_CALL", "Failed to fetch data from API", t)
-                Toast.makeText(context.applicationContext, "loi2: " + t.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context.applicationContext, "loi2: " + t.message, Toast.LENGTH_SHORT)
+                    .show()
             }
         })
     }
@@ -99,7 +106,9 @@ class TruyenDaDocAdapter //     public TruyenDaDocAdapter(Context context, List<
 
             override fun onFailure(call: Call<String?>, t: Throwable) {
                 Log.e("API_CALL", "Failed to fetch data from API", t)
-                Toast.makeText(context.applicationContext, "loi: " + id + t.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context.applicationContext, "loi: " + id + t.message, Toast.LENGTH_SHORT
+                ).show()
             }
         })
     }
