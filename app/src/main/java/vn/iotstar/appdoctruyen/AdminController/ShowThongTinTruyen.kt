@@ -21,6 +21,7 @@ import vn.iotstar.appdoctruyen.model.Chapter
 import vn.iotstar.appdoctruyen.model.ChapterAdmin
 import vn.iotstar.appdoctruyen.model.truyen
 import java.text.Normalizer
+import java.time.LocalDate
 import java.util.*
 import java.util.regex.Pattern
 
@@ -122,7 +123,7 @@ class ShowThongTinTruyen : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun showChapter() {
-        APIService.apiService.getChapterByIdAdmin(id).enqueue(object : Callback<List<ChapterAdmin>?> {
+        APIService.apiService.getChapterByIdAdmin(id)?.enqueue(object : Callback<List<ChapterAdmin>?> {
             override fun onResponse(call: Call<List<ChapterAdmin>?>, response: Response<List<ChapterAdmin>?>) {
                 chapterList = response.body()
                 val adapter = QuanLyChapterAdapter(this@ShowThongTinTruyen, chapterList)
@@ -189,84 +190,95 @@ class ShowThongTinTruyen : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onClick(v: View) {
-        if (v.id == R.id.img_newchapter) {
-            cv_themchapter!!.visibility = View.VISIBLE
-        }
-        if (v.id == R.id.bt_chinhsuatruyen) {
-            setEnable(1)
-        }
-        if (v.id == R.id.bt_huychinhsuatruyen) {
-            setEnable(0)
-        }
-        if (v.id == R.id.bt_xacnhantruyen) {
-            val id = tv_id!!.getText().toString().toInt()
-            val tentruyen = edt_tentruyen!!.getText().toString()
-            val tacgia = edt_tacgia!!.getText().toString()
-            val mota = edt_mota!!.getText().toString()
-            val theloai = edt_theloai!!.getText().toString()
-            val linkanh = edt_linkanh!!.getText().toString()
-            val trangthai = edt_trangthai!!.getText().toString()
-            val key_search = removeAccent(tentruyen).trim { it <= ' ' }
-            if (!tentruyen.isEmpty() && !tacgia.isEmpty() && !theloai.isEmpty() && !mota.isEmpty() && !linkanh.isEmpty()) {
-                truyen1 = truyen(tentruyen, tacgia, mota, theloai, linkanh, trangthai.toInt(), key_search)
-                APIService.apiService.updateTruyen(truyen1!!, id)?.enqueue(object : Callback<truyen?> {
-                    override fun onResponse(call: Call<truyen?>, response: Response<truyen?>) {
-                        val result = response.body()
-                        if (result != null) {
-                            Toast.makeText(this@ShowThongTinTruyen, "Cập nhật thành công", Toast.LENGTH_SHORT).show()
-                        }
-                    }
+        when (v.id) {
+            R.id.img_newchapter -> {
+                cv_themchapter!!.visibility = View.VISIBLE
+            }
+            R.id.bt_chinhsuatruyen -> {
+                setEnable(1)
+            }
+            R.id.bt_huychinhsuatruyen -> {
+                setEnable(0)
+            }
+            R.id.bt_xacnhantruyen -> {
+                val id = tv_id!!.text.toString().toInt()
+                val tentruyen = edt_tentruyen!!.text.toString()
+                val tacgia = edt_tacgia!!.text.toString()
+                val mota = edt_mota!!.text.toString()
+                val theloai = edt_theloai!!.text.toString()
+                val linkanh = edt_linkanh!!.text.toString()
+                val trangthai = edt_trangthai!!.text.toString()
+                val key_search = removeAccent(tentruyen).trim { it <= ' ' }
 
-                    override fun onFailure(call: Call<truyen?>, throwable: Throwable) {
-                        Toast.makeText(this@ShowThongTinTruyen, "Cập nhật thất bại", Toast.LENGTH_SHORT).show()
-                    }
-                })
+                if (tentruyen.isNotEmpty() && tacgia.isNotEmpty() && theloai.isNotEmpty() && mota.isNotEmpty() && linkanh.isNotEmpty()) {
+                    truyen1 = truyen(tentruyen, tacgia, mota, theloai, linkanh, trangthai.toInt(), key_search)
+                    APIService.apiService.updateTruyen(truyen1!!, id)?.enqueue(object : Callback<truyen?> {
+                        override fun onResponse(call: Call<truyen?>, response: Response<truyen?>) {
+                            if (response.isSuccessful) {
+                                val result = response.body()
+                                if (result != null) {
+                                    Toast.makeText(this@ShowThongTinTruyen, "Cập nhật thành công", Toast.LENGTH_SHORT).show()
+                                    reload()
+                                } else {
+                                    Toast.makeText(this@ShowThongTinTruyen, "Dữ liệu trả về không hợp lệ", Toast.LENGTH_SHORT).show()
+                                }
+                            } else {
+                                Toast.makeText(this@ShowThongTinTruyen, "Cập nhật thất bại: ${response.message()}", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+
+                        override fun onFailure(call: Call<truyen?>, throwable: Throwable) {
+                            Toast.makeText(this@ShowThongTinTruyen, "Cập nhật thất bại: ${throwable.message}", Toast.LENGTH_SHORT).show()
+                            Log.e("API Error", "Cập nhật thất bại. Lỗi: ${throwable.message}", throwable)
+                        }
+                    })
+                    cv_themchapter!!.visibility = View.GONE
+                } else {
+                    Toast.makeText(this, "Vui lòng nhập đủ thông tin", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            R.id.bt_them_newchapter -> {
+                val idtruyen = truyen()
+                idtruyen.id = tv_id!!.text.toString().toInt()
+                val tenchapter = edt_tenchapter_newchapter!!.text.toString()
+
+                if (tenchapter.isEmpty()) {
+                    Toast.makeText(this, "Vui lòng nhập tên chapter", Toast.LENGTH_SHORT).show()
+                } else {
+                    val date = LocalDate.now()
+                    val chapter = Chapter(tenchapter, date, 0, 0.0)
+                    val idtruyenId = idtruyen.id ?: 0 // Provide a default value of 0 if idtruyen.id is null
+                    APIService.apiService.addChapter(idtruyenId, chapter)?.enqueue(object : Callback<Chapter?> {
+                        override fun onResponse(call: Call<Chapter?>, response: Response<Chapter?>) {
+                            if (response.isSuccessful) {
+                                Toast.makeText(this@ShowThongTinTruyen, "Thêm chapter thành công", Toast.LENGTH_SHORT).show()
+                                showChapter()
+                            } else {
+                                Toast.makeText(this@ShowThongTinTruyen, "Thêm chapter thất bại", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+
+                        override fun onFailure(call: Call<Chapter?>, throwable: Throwable) {
+                            Toast.makeText(this@ShowThongTinTruyen, "Thêm chapter thất bại: ${throwable.message}", Toast.LENGTH_SHORT).show()
+                            Log.e("API Error", "Lỗi: ${throwable.message}", throwable)
+                        }
+                    })
+                }
+            }
+
+            R.id.bt_huy_newchapter -> {
                 cv_themchapter!!.visibility = View.GONE
-                reload()
-            } else {
-                Toast.makeText(this, "Vui lòng nhập đủ thông tin", Toast.LENGTH_SHORT).show()
             }
-        }
-        if (v.id == R.id.bt_them_newchapter) {
-            //String tentruyen = edt_tentruyen.getText().toString();
-            val idtruyen = truyen()
-            idtruyen.id = tv_id!!.getText().toString().toInt()
-            val tenchapter = edt_tenchapter_newchapter!!.getText().toString()
-            if (tenchapter.isEmpty()) {
-                Toast.makeText(this, "Vui lòng nhập tên chapter", Toast.LENGTH_SHORT).show()
-            } else {
-                val chapter = Chapter(tenchapter, null, 0, 0.0)
-                APIService.apiService.addChapter(id, chapter)?.enqueue(object : Callback<Chapter?> {
-                    override fun onResponse(call: Call<Chapter?>, response: Response<Chapter?>) {
-                        val result = response.body()
-                        if (result != null) {
-                            Toast.makeText(this@ShowThongTinTruyen, "Thêm chapter thành công", Toast.LENGTH_SHORT)
-                                .show()
-                            showChapter()
-                        }
-                    }
-
-                    override fun onFailure(call: Call<Chapter?>, throwable: Throwable) {
-                        //Toast.makeText(ShowThongTinTruyen.this, "Thêm chapter thất bại", Toast.LENGTH_SHORT).show();
-                        //Log.e("API Error", "Thêm chapter thất bại. Lỗi: " + throwable.getMessage(), throwable);
-                        //Toast.makeText(ShowThongTinTruyen.this, "Thêm chapter thất bại", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                reload()
-            }
-        }
-        if (v.id == R.id.bt_huy_newchapter) {
-            cv_themchapter!!.visibility = View.GONE
         }
     }
 
+
     private fun reload() {
         val intent = intent
+        finish()  // Kết thúc Activity hiện tại
+        startActivity(intent)  // Khởi động lại Activity với dữ liệu mới
         overridePendingTransition(0, 0)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-        finish()
-        overridePendingTransition(0, 0)
-        startActivity(intent)
     }
 
     companion object {
