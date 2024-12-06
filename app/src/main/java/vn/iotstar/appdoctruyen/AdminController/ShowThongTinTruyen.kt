@@ -53,9 +53,11 @@ class ShowThongTinTruyen : AppCompatActivity(), View.OnClickListener {
         AnhXa()
         val intent = intent
         id = intent.getIntExtra("id_truyen", 1)
-        val linearLayoutManager = LinearLayoutManager(this@ShowThongTinTruyen, RecyclerView.VERTICAL, false)
+        val linearLayoutManager =
+            LinearLayoutManager(this@ShowThongTinTruyen, RecyclerView.VERTICAL, false)
         rcv!!.setLayoutManager(linearLayoutManager)
-        val itemDecoration = DividerItemDecoration(this@ShowThongTinTruyen, DividerItemDecoration.VERTICAL)
+        val itemDecoration =
+            DividerItemDecoration(this@ShowThongTinTruyen, DividerItemDecoration.VERTICAL)
         rcv!!.addItemDecoration(itemDecoration)
         chapterList = ArrayList()
         setEnable(0)
@@ -74,42 +76,54 @@ class ShowThongTinTruyen : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun showChapter() {
-        APIService.apiService.getChapterByIdAdmin(id).enqueue(object : Callback<List<ChapterAdmin>?> {
-            override fun onResponse(call: Call<List<ChapterAdmin>?>, response: Response<List<ChapterAdmin>?>) {
-                chapterList = response.body()
-                val adapter = QuanLyChapterAdapter(this@ShowThongTinTruyen, chapterList)
-                rcv!!.setAdapter(adapter)
-            }
+        APIService.apiService.getChapterByIdAdmin(id)?.enqueue(object : Callback<List<ChapterAdmin>?> {
+                override fun onResponse(
+                    call: Call<List<ChapterAdmin>?>, response: Response<List<ChapterAdmin>?>
+                ) {
+                    chapterList = response.body()
+                    val adapter = QuanLyChapterAdapter(this@ShowThongTinTruyen, chapterList)
+                    rcv!!.setAdapter(adapter)
+                }
 
-            override fun onFailure(call: Call<List<ChapterAdmin>?>, throwable: Throwable) {
-                //Toast.makeText(ShowThongTinTruyen.this, "Không láy dc chapter", Toast.LENGTH_SHORT).show();
-                Log.e("API Error", "Không láy dc chapter. Lỗi: " + throwable.message, throwable)
-                Toast.makeText(
-                    this@ShowThongTinTruyen,
-                    "Không láy dc chapter. Lỗi: " + throwable.message,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        })
+                override fun onFailure(call: Call<List<ChapterAdmin>?>, throwable: Throwable) {
+                    //Toast.makeText(ShowThongTinTruyen.this, "Không láy dc chapter", Toast.LENGTH_SHORT).show();
+                    Log.e("API Error", "Không láy dc chapter. Lỗi: " + throwable.message, throwable)
+                    Toast.makeText(
+                        this@ShowThongTinTruyen,
+                        "Không láy dc chapter. Lỗi: " + throwable.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
     }
 
     private fun setData() {
-        APIService.apiService.getTruyenById(id).enqueue(object : Callback<List<truyen>?> {
+        APIService.apiService.getTruyenById(id)?.enqueue(object : Callback<List<truyen>?> {
             override fun onResponse(call: Call<List<truyen>?>, response: Response<List<truyen>?>) {
-                truyenList = response.body()
-                if (truyenList != null) {
-                    edt_tentruyen!!.setText(truyenList!![0].tentruyen)
-                    Glide.with(this@ShowThongTinTruyen).load(truyenList!![0].linkanh).into(img_truyen!!)
-                    edt_tacgia!!.setText(truyenList!![0].tacgia)
-                    edt_mota!!.setText(truyenList!![0].mota)
-                    edt_theloai!!.setText(truyenList!![0].theloai)
-                    edt_trangthai!!.setText("" + truyenList!![0].trangthai)
-                    tv_id!!.text = "" + truyenList!![0].id
-                    edt_linkanh!!.setText(truyenList!![0].linkanh)
+                if (response.isSuccessful) {
+                    Log.d("response", "${response.body()}")
+                    truyenList = response.body()
+                    if (truyenList != null) {
+                        edt_tentruyen!!.setText(truyenList!![0].tentruyen)
+                        Glide.with(this@ShowThongTinTruyen).load(truyenList!![0].linkanh)
+                            .into(img_truyen!!)
+                        edt_tacgia!!.setText(truyenList!![0].tacgia)
+                        edt_mota!!.setText(truyenList!![0].mota)
+                        edt_theloai!!.setText(truyenList!![0].theloai)
+                        edt_trangthai!!.setText("" + truyenList!![0].trangthai)
+                        tv_id!!.text = "" + truyenList!![0].id
+                        edt_linkanh!!.setText(truyenList!![0].linkanh)
+                    }
+                } else {
+                    Log.e(
+                        "ShowThongTinTruyen",
+                        "Error Code: ${response.code()}, Message: ${response.message()}"
+                    )
                 }
             }
 
             override fun onFailure(call: Call<List<truyen>?>, throwable: Throwable) {
+                Log.e("ShowThongTinTruyen", "Error show thong tin truyen: ${throwable.message}")
                 Toast.makeText(this@ShowThongTinTruyen, "Lỗi kết nối", Toast.LENGTH_SHORT).show()
             }
         })
@@ -179,19 +193,27 @@ class ShowThongTinTruyen : AppCompatActivity(), View.OnClickListener {
             val trangthai = edt_trangthai!!.getText().toString()
             val key_search = removeAccent(tentruyen).trim { it <= ' ' }
             if (!tentruyen.isEmpty() && !tacgia.isEmpty() && !theloai.isEmpty() && !mota.isEmpty() && !linkanh.isEmpty()) {
-                truyen1 = truyen(tentruyen, tacgia, mota, theloai, linkanh, trangthai.toInt(), key_search)
-                APIService.apiService.updateTruyen(truyen1!!, id)?.enqueue(object : Callback<truyen?> {
-                    override fun onResponse(call: Call<truyen?>, response: Response<truyen?>) {
-                        val result = response.body()
-                        if (result != null) {
-                            Toast.makeText(this@ShowThongTinTruyen, "Cập nhật thành công", Toast.LENGTH_SHORT).show()
+                truyen1 =
+                    truyen(tentruyen, tacgia, mota, theloai, linkanh, trangthai.toInt(), key_search)
+                APIService.apiService.updateTruyen(truyen1!!, id)
+                    ?.enqueue(object : Callback<truyen?> {
+                        override fun onResponse(call: Call<truyen?>, response: Response<truyen?>) {
+                            val result = response.body()
+                            if (result != null) {
+                                Toast.makeText(
+                                    this@ShowThongTinTruyen,
+                                    "Cập nhật thành công",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         }
-                    }
 
-                    override fun onFailure(call: Call<truyen?>, throwable: Throwable) {
-                        Toast.makeText(this@ShowThongTinTruyen, "Cập nhật thất bại", Toast.LENGTH_SHORT).show()
-                    }
-                })
+                        override fun onFailure(call: Call<truyen?>, throwable: Throwable) {
+                            Toast.makeText(
+                                this@ShowThongTinTruyen, "Cập nhật thất bại", Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    })
                 cv_themchapter!!.visibility = View.GONE
                 reload()
             } else {
@@ -211,8 +233,11 @@ class ShowThongTinTruyen : AppCompatActivity(), View.OnClickListener {
                     override fun onResponse(call: Call<Chapter?>, response: Response<Chapter?>) {
                         val result = response.body()
                         if (result != null) {
-                            Toast.makeText(this@ShowThongTinTruyen, "Thêm chapter thành công", Toast.LENGTH_SHORT)
-                                .show()
+                            Toast.makeText(
+                                this@ShowThongTinTruyen,
+                                "Thêm chapter thành công",
+                                Toast.LENGTH_SHORT
+                            ).show()
                             showChapter()
                         }
                     }
