@@ -56,9 +56,11 @@ class ShowThongTinChapter : AppCompatActivity(), View.OnClickListener {
         //Toast.makeText(this, "id: " + id, Toast.LENGTH_SHORT).show();
 //        chapter=db.getOneChapter(id);
 //        truyen=db.getTruyenById(chapter.getIdtruyen());
-        val linearLayoutManager = LinearLayoutManager(this@ShowThongTinChapter, RecyclerView.VERTICAL, false)
+        val linearLayoutManager =
+            LinearLayoutManager(this@ShowThongTinChapter, RecyclerView.VERTICAL, false)
         rcv!!.setLayoutManager(linearLayoutManager)
-        val itemDecoration = DividerItemDecoration(this@ShowThongTinChapter, DividerItemDecoration.VERTICAL)
+        val itemDecoration =
+            DividerItemDecoration(this@ShowThongTinChapter, DividerItemDecoration.VERTICAL)
         rcv!!.addItemDecoration(itemDecoration)
         list = ArrayList()
         noidungchapterList = ArrayList()
@@ -69,19 +71,24 @@ class ShowThongTinChapter : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun showThongTinChapter() {
-        APIService.apiService.getLinkChapterById(id)?.enqueue(object : Callback<List<Noidungchapter>?> {
-            override fun onResponse(call: Call<List<Noidungchapter>?>, response: Response<List<Noidungchapter>?>) {
-                noidungchapterList = response.body()
-                val adapter = QuanLyDNChapterAdapter(this@ShowThongTinChapter, noidungchapterList)
-                rcv!!.setAdapter(adapter)
-            }
+        APIService.apiService.getLinkChapterById(id)
+            ?.enqueue(object : Callback<List<Noidungchapter>?> {
+                override fun onResponse(
+                    call: Call<List<Noidungchapter>?>, response: Response<List<Noidungchapter>?>
+                ) {
+                    noidungchapterList = response.body()
+                    val adapter =
+                        QuanLyDNChapterAdapter(this@ShowThongTinChapter, noidungchapterList)
+                    rcv!!.setAdapter(adapter)
+                }
 
-            override fun onFailure(call: Call<List<Noidungchapter>?>, throwable: Throwable) {
-                //Toast.makeText(ShowThongTinChapter.this, "Lỗi kết nối", Toast.LENGTH_SHORT).show();
-                Log.e("API Error", "Lỗi kết nối. Lỗi: " + throwable.message, throwable)
-                Toast.makeText(this@ShowThongTinChapter, "Lỗi kết nối", Toast.LENGTH_SHORT).show()
-            }
-        })
+                override fun onFailure(call: Call<List<Noidungchapter>?>, throwable: Throwable) {
+                    //Toast.makeText(ShowThongTinChapter.this, "Lỗi kết nối", Toast.LENGTH_SHORT).show();
+                    Log.e("API Error", "Lỗi kết nối. Lỗi: " + throwable.message, throwable)
+                    Toast.makeText(this@ShowThongTinChapter, "Lỗi kết nối", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            })
     }
 
     private fun setOnClickListener() {
@@ -94,35 +101,50 @@ class ShowThongTinChapter : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun setData() {
-        APIService.apiService.getChapterContentById(id)?.enqueue(object : Callback<List<ChapterAdmin>?> {
-            override fun onResponse(call: Call<List<ChapterAdmin>?>, response: Response<List<ChapterAdmin>?>) {
-                list = response.body()
-                if (list != null) {
-                    //Glide.with(ShowThongTinChapter.this).load(truyen.getLinkhanh()).into(img_truyen);
-                    tv_id!!.text = "" + list!![0].id
-                    //tv_tentruyen.setText(truyen.getTentruyen());
-                    edt_tenchapter!!.setText(list!![0].tenchapter)
-                    tv_danhgia!!.text = "" + list!![0].danhgia
-                    tv_luotxem!!.text = "" + list!![0].soluotxem
-                    tv_ngaydang!!.text = list!![0].ngaydang
-                }
-            }
+        APIService.apiService.getChapterContentById(id)
+            ?.enqueue(object : Callback<List<ChapterAdmin>?> {
+                override fun onResponse(
+                    call: Call<List<ChapterAdmin>?>, response: Response<List<ChapterAdmin>?>
+                ) {
+                    list = response.body()
+                    if (list != null) {
+                        val idtruyen = list!![0].idtruyen
+                        tv_id!!.text = "" + list!![0].id
+                        edt_tenchapter!!.setText(list!![0].tenchapter)
+                        tv_danhgia!!.text = "" + list!![0].danhgia
+                        tv_luotxem!!.text = "" + list!![0].soluotxem
+                        tv_ngaydang!!.text = list!![0].ngaydang
 
-            override fun onFailure(call: Call<List<ChapterAdmin>?>, throwable: Throwable) {}
-        })
-        APIService.apiService.getTruyenById(id).enqueue(object : Callback<List<truyen>?> {
-            override fun onResponse(call: Call<List<truyen>?>, response: Response<List<truyen>?>) {
-                truyenList = response.body()
-                if (truyenList != null) {
-                    Glide.with(this@ShowThongTinChapter).load(truyenList!![0].linkanh).into(img_truyen!!)
-                    tv_tentruyen!!.text = truyenList!![0].tentruyen
-                }
-            }
+                        // Gọi API thứ hai bên trong onResponse
+                        APIService.apiService.getTruyenById(idtruyen)
+                            ?.enqueue(object : Callback<List<truyen>?> {
+                                override fun onResponse(
+                                    call: Call<List<truyen>?>, response: Response<List<truyen>?>
+                                ) {
+                                    truyenList = response.body()
+                                    if (truyenList != null) {
+                                        Glide.with(this@ShowThongTinChapter)
+                                            .load(truyenList!![0].linkanh).into(img_truyen!!)
+                                        tv_tentruyen!!.text = truyenList!![0].tentruyen
+                                    }
+                                }
 
-            override fun onFailure(call: Call<List<truyen>?>, throwable: Throwable) {
-                Toast.makeText(this@ShowThongTinChapter, "Lỗi kết nối", Toast.LENGTH_SHORT).show()
-            }
-        })
+                                override fun onFailure(
+                                    call: Call<List<truyen>?>, throwable: Throwable
+                                ) {
+                                    Toast.makeText(
+                                        this@ShowThongTinChapter, "Lỗi kết nối", Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            })
+                    }
+                }
+
+                override fun onFailure(call: Call<List<ChapterAdmin>?>, throwable: Throwable) {
+                    Toast.makeText(this@ShowThongTinChapter, "Lỗi kết nối", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            })
     }
 
     private fun setEnable(i: Int) {
@@ -181,32 +203,44 @@ class ShowThongTinChapter : AppCompatActivity(), View.OnClickListener {
                 Toast.makeText(this, "Vui lòng nhập link ảnh", Toast.LENGTH_SHORT).show()
             } else {
                 val noidungchapter = Noidungchapter(linkanh)
-                APIService.apiService.addLinkChapter(id, noidungchapter)?.enqueue(object : Callback<Noidungchapter?> {
-                    override fun onResponse(call: Call<Noidungchapter?>, response: Response<Noidungchapter?>) {
-                        val result = response.body()
-                        if (result != null) {
+                APIService.apiService.addLinkChapter(id, noidungchapter)
+                    ?.enqueue(object : Callback<Noidungchapter?> {
+                        override fun onResponse(
+                            call: Call<Noidungchapter?>, response: Response<Noidungchapter?>
+                        ) {
+                            val result = response.body()
+                            if (result != null) {
+                                Toast.makeText(
+                                    this@ShowThongTinChapter,
+                                    "Thêm nội dung chapter thành công",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                showThongTinChapter()
+                                cv_themndchapter!!.visibility = View.GONE
+
+                            } else {
+                                Toast.makeText(
+                                    this@ShowThongTinChapter,
+                                    "Thêm nội dung chapter thất bại",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+
+                        override fun onFailure(call: Call<Noidungchapter?>, throwable: Throwable) {
+                            //Toast.makeText(ShowThongTinChapter.this, "Lỗi kết nối", Toast.LENGTH_SHORT).show();
+                            Log.e(
+                                "API Error",
+                                "Lỗi kết nối. Lỗi: ${throwable.message}" + throwable.message,
+                                throwable
+                            )
                             Toast.makeText(
                                 this@ShowThongTinChapter,
                                 "Thêm nội dung chapter thành công",
                                 Toast.LENGTH_SHORT
                             ).show()
-                            showThongTinChapter()
-                            cv_themndchapter!!.visibility = View.GONE
-                        } else {
-                            Toast.makeText(
-                                this@ShowThongTinChapter,
-                                "Thêm nội dung chapter thất bại",
-                                Toast.LENGTH_SHORT
-                            ).show()
                         }
-                    }
-
-                    override fun onFailure(call: Call<Noidungchapter?>, throwable: Throwable) {
-                        //Toast.makeText(ShowThongTinChapter.this, "Lỗi kết nối", Toast.LENGTH_SHORT).show();
-                        Log.e("API Error", "Lỗi kết nối. Lỗi: " + throwable.message, throwable)
-                        Toast.makeText(this@ShowThongTinChapter, "Lỗi kết nối", Toast.LENGTH_SHORT).show()
-                    }
-                })
+                    })
                 reload()
             }
         }
