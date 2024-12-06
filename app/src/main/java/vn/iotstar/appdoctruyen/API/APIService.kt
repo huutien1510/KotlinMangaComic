@@ -1,5 +1,6 @@
 package vn.iotstar.appdoctruyen.API
 
+import android.content.Intent
 import com.google.gson.GsonBuilder
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -176,7 +177,7 @@ interface APIService {
         val gson = GsonBuilder().setDateFormat("dd-MM-yyyy").create()
 
         val apiService = Retrofit.Builder()
-            .baseUrl("http://192.168.100.5:8090/")
+            .baseUrl("http://192.168.1.76:8090/")
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
             .create(APIService::class.java)

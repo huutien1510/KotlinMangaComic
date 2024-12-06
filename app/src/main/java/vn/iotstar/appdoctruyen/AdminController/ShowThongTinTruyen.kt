@@ -53,16 +53,64 @@ class ShowThongTinTruyen : AppCompatActivity(), View.OnClickListener {
         AnhXa()
         val intent = intent
         id = intent.getIntExtra("id_truyen", 1)
+
         val linearLayoutManager = LinearLayoutManager(this@ShowThongTinTruyen, RecyclerView.VERTICAL, false)
         rcv!!.setLayoutManager(linearLayoutManager)
         val itemDecoration = DividerItemDecoration(this@ShowThongTinTruyen, DividerItemDecoration.VERTICAL)
         rcv!!.addItemDecoration(itemDecoration)
         chapterList = ArrayList()
-        setEnable(0)
         setData()
+        setEnable(0)
+
         showChapter()
         setOnClickListener()
     }
+    private fun setData() {
+        // Gọi API để lấy thông tin truyện
+        APIService.apiService.getTruyenById(id)?.enqueue(object : Callback<List<truyen>?> {
+            override fun onResponse(call: Call<List<truyen>?>, response: Response<List<truyen>?>) {
+                // Kiểm tra nếu phản hồi thành công
+                if (response.isSuccessful) {
+                    val truyenList = response.body()
+                    if (truyenList != null && truyenList.isNotEmpty()) {
+                        // Log để debug dữ liệu nhận được
+                        Log.d("DEBUG", "Truyện nhận được: ${truyenList[0]}")
+
+                        val truyen = truyenList[0]
+
+                        // Cập nhật giao diện
+                        edt_tentruyen!!.setText(truyen.tentruyen)
+                        Glide.with(this@ShowThongTinTruyen)
+                            .load(truyen.linkanh)
+                            .into(img_truyen!!)
+
+                        edt_tacgia!!.setText(truyen.tacgia)
+                        edt_mota!!.setText(truyen.mota)
+                        edt_theloai!!.setText(truyen.theloai)
+                        edt_trangthai!!.setText(truyen.trangthai.toString())
+                        tv_id!!.text = truyen.id.toString()
+                        edt_linkanh!!.setText(truyen.linkanh)
+                    } else {
+                        // Dữ liệu rỗng hoặc không hợp lệ
+                        Toast.makeText(this@ShowThongTinTruyen, "Dữ liệu trả về trống", Toast.LENGTH_SHORT).show()
+                        Log.e("DEBUG", "Dữ liệu trả về từ API rỗng hoặc không có.")
+                    }
+                } else {
+                    // Phản hồi không thành công (404, 500, v.v.)
+                    Toast.makeText(this@ShowThongTinTruyen, "Lỗi API: ${response.code()}", Toast.LENGTH_SHORT).show()
+                    Log.e("DEBUG", "Lỗi API: ${response.code()}, ${response.errorBody()?.string()}")
+                }
+            }
+
+            override fun onFailure(call: Call<List<truyen>?>, throwable: Throwable) {
+                // Xử lý lỗi kết nối
+                Toast.makeText(this@ShowThongTinTruyen, "Lỗi kết nối: ${throwable.message}", Toast.LENGTH_SHORT).show()
+                Log.e("DEBUG", "Lỗi kết nối API: ${throwable.message}", throwable)
+            }
+        })
+    }
+
+
 
     private fun setOnClickListener() {
         img_new!!.setOnClickListener(this)
@@ -93,27 +141,8 @@ class ShowThongTinTruyen : AppCompatActivity(), View.OnClickListener {
         })
     }
 
-    private fun setData() {
-        APIService.apiService.getTruyenById(id).enqueue(object : Callback<List<truyen>?> {
-            override fun onResponse(call: Call<List<truyen>?>, response: Response<List<truyen>?>) {
-                truyenList = response.body()
-                if (truyenList != null) {
-                    edt_tentruyen!!.setText(truyenList!![0].tentruyen)
-                    Glide.with(this@ShowThongTinTruyen).load(truyenList!![0].linkanh).into(img_truyen!!)
-                    edt_tacgia!!.setText(truyenList!![0].tacgia)
-                    edt_mota!!.setText(truyenList!![0].mota)
-                    edt_theloai!!.setText(truyenList!![0].theloai)
-                    edt_trangthai!!.setText("" + truyenList!![0].trangthai)
-                    tv_id!!.text = "" + truyenList!![0].id
-                    edt_linkanh!!.setText(truyenList!![0].linkanh)
-                }
-            }
 
-            override fun onFailure(call: Call<List<truyen>?>, throwable: Throwable) {
-                Toast.makeText(this@ShowThongTinTruyen, "Lỗi kết nối", Toast.LENGTH_SHORT).show()
-            }
-        })
-    }
+
 
     private fun setEnable(i: Int) {
         if (i == 1) {

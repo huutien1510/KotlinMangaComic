@@ -26,7 +26,7 @@ class QuanLyTruyenAdapter(private val context: Context, private val mList: List<
         holder.tv_tentruyen.text = Truyen.tentruyen
         holder.ll_rcv_qltruyen.setOnClickListener { view: View? ->
             val intent = Intent(holder.itemView.context, ShowThongTinTruyen::class.java)
-            intent.putExtra("id_truyen", Truyen.id)
+            intent.putExtra("id_truyen", Truyen.id ?: -1)
             holder.itemView.context.startActivity(intent)
         }
     }
