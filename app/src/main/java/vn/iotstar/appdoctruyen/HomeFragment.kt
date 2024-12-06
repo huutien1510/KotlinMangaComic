@@ -269,10 +269,6 @@ class HomeFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
 //                Intent dialog_box3 = new Intent(getActivity(), QuanLyThongKe.class);
 //                startActivity(dialog_box3);
 //                break;
-        if (menuItem.itemId == R.id.it_xephang) {
-            val dialog_box4 = Intent(activity, XepHangFragment::class.java)
-            startActivity(dialog_box4)
-        }
         if (menuItem.itemId == R.id.it_theloai) {
             val dialog_box5 = Intent(activity, TheLoaiFragment::class.java)
             startActivity(dialog_box5)
